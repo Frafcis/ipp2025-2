@@ -44,7 +44,7 @@ def control_camara(iniciar=True):
     global capture, is_camera_running
     if iniciar:
         if is_camera_running: return
-        for i in [1]:
+        for i in [0]:
             capture = cv2.VideoCapture(i)
             if capture.isOpened(): break
         if not capture or not capture.isOpened():
@@ -240,6 +240,26 @@ def on_closing():
     control_camara(iniciar=False)
     ventana.destroy()
 
+# --- Relleno de espacios vacios en la webera ---
+import serial
+import time
+SerialPort1 = serial.Serial()
+def rellenar_vacios(vacios):
+    if SerialPort1.isOpen() == False: #CAMBIAR A FALSE PARA PROBAR
+        SerialPort1.baudrate = 9600
+        SerialPort1.bytesize = 8
+        SerialPort1.parity = "N"
+        SerialPort1.stopbits = serial.STOPBITS_ONE
+        SerialPort1.port = 'COM3'
+        SerialPort1.open()
+
+    for i,j in vacios:
+        if i == 0: 
+            matriz_pos[i][j]
+            SerialPort1.write(b"Run 1" + b"\r")
+            time.sleep(2)
+
+    return
 # =================================================================================
 # === CONSTRUCCIÓN DE LA INTERFAZ GRÁFICA (GUI) ===
 # =================================================================================
@@ -280,6 +300,8 @@ btn_stop = tk.Button(col1, text="Detener Detección", command=lambda: control_ca
 btn_stop.pack(pady=5)
 btn_load = tk.Button(col1, text="Cargar Imagen", command=cargar_imagen, font=("Times New Roman", 12), width=18, bg=BUTTON_COLOR, fg=TEXT_COLOR, relief='flat', activebackground='#555555', activeforeground=TEXT_COLOR)
 btn_load.pack(pady=5)
+btn_fill = tk.Button(col1, text="Rellenar vacíos", command=lambda: rellenar_vacios([[1,0,1],[0,1,0]]), font=("Times New Roman", 12), width=18, bg=BUTTON_COLOR, fg=TEXT_COLOR, relief='flat', activebackground='#555555', activeforeground=TEXT_COLOR)
+btn_fill.pack(pady=5)
 
 # Columna 2: Contador y Slider de Ajuste
 col2 = tk.Frame(frame_controles_inferior, bg=BG_COLOR)
